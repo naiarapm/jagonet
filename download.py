@@ -84,17 +84,23 @@ def get_text(tag: Tag) -> str:
                 desc = desc.replace('\t', '').replace('\n', '')
                 if desc:
                     parts.append(desc)
+            # external reference
+            elif desc.name == 'a':
+                del desc['class']
+                del desc['target']
+                parts.append(str(desc))
+                next(tag_iter)
             # usually a metalinguistic reference; we want to keep the annotation
             elif desc.name == 'em':
                 if not desc.text.strip():
                     continue
+                del desc['class']
                 parts.append(str(desc))
                 next(tag_iter)
             # a metalinguistic reference; we want to keep the annotation
             elif 'jagonet-adibidea' in desc.get('class', []):
                 if not desc.text.strip():
                     continue
-                # just for the sake of readability
                 desc.name = 'adib'
                 del desc['class']
                 parts.append(str(desc))
